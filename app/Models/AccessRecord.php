@@ -15,5 +15,6 @@ class AccessRecord extends Model {
     ];
 
     protected $primaryKey = 'id_registro';
+    protected $table = 'access_records';
 }
 
