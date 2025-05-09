@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AccessRecordController;
+use App\Http\Controllers\StatisticsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,7 +19,8 @@ Route::put('/teachers/{id}', [TeacherController::class, 'update']);
 Route::get('/teachers', [TeacherController::class, 'index']);
 Route::get('/access', [AccessRecordController::class, 'index'])->name('access');
 Route::put('/teachers/{teacher}', [TeacherController::class, 'update'])->name('teachers.update');
-
+Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics');
+Route::get('/statistics/export', [StatisticsController::class, 'export'])->name('statistics.export');
 
 Route::resource('teachers', TeacherController::class);
 Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('teachers.show');
@@ -26,6 +28,8 @@ Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('tea
 Route::resource('teachers', TeacherController::class)->middleware('auth');
 
 Route::get('/dashboard', function () {return redirect('/teachers');})->name('dashboard');
+
+
 
 
 

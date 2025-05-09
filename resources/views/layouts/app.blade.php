@@ -58,7 +58,7 @@
                             <a class="nav-link" href="{{ url('/access') }}">Accesos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/admin') }}">Estadísticas</a>
+                            <a class="nav-link" href="{{ url('/statistics') }}">Estadísticas</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}"
