@@ -37,7 +37,7 @@ class TeacherController extends Controller
         $teacher->nombre = $request->input('nombre');
         $teacher->save();
 
-        return 'Guardado';
+        return redirect()->route('teachers.index')->with('success', 'Docente guardado');
     }
 
     /**
