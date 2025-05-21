@@ -1,26 +1,54 @@
 <?php
 
 namespace App\Models;
-use App\Models\AccessRecord;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AccessRecord extends Model {
+class AccessRecord extends Model
+{
     use HasFactory;
 
+    protected $table = 'access_records';
+
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'docente', 'rfid', 'materia', 'num_alumnos',
-        'grupo_carrera', 'tipo_uso_sw', 'fecha', 'hora_entrada',
-        'hora_salida', 'estado'
+        'teacher_id',
+        'subject_id',
+        'career_group_id',
+        'software_type_id',
+        'rfid',
+        'num_alumnos',
+        'fecha',
+        'hora_entrada',
+        'hora_salida',
+        'estado',
     ];
 
-    protected $primaryKey = 'id_registro';
-    protected $table = 'access_records';
+    protected $casts = [
+        'fecha' => 'date',
+        'hora_entrada' => 'datetime',
+        'hora_salida' => 'datetime',
+    ];
 
     public function teacher()
     {
-        return $this->belongsTo(Teacher::class, 'docente', 'nombre');
+        return $this->belongsTo(Teacher::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    public function careerGroup()
+    {
+        return $this->belongsTo(CareerGroup::class);
+    }
+
+    public function softwareType()
+    {
+        return $this->belongsTo(SoftwareType::class);
     }
 }
-

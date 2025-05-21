@@ -2,63 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SoftwareType;
 use Illuminate\Http\Request;
 
 class SoftwareTypeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $softwareTypes = SoftwareType::all();
+        return view('software_types', compact('softwareTypes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:50|unique:software_types',
+        ]);
+
+        SoftwareType::create($request->only('nombre'));
+
+        return redirect()->route('software-types.index')->with('success', 'Tipo de software registrado exitosamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(SoftwareType $softwareType)
     {
-        //
+        return view('software_types_edit', compact('softwareType'));
+    }
+        
+    
+    public function update(Request $request, SoftwareType $software_type)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:50|unique:software_types,nombre,' . $software_type->id,
+        ]);
+
+        $software_type->update($request->only('nombre'));
+
+        return redirect()->route('software-types.index')->with('success', 'Tipo de software actualizado exitosamente');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(SoftwareType $software_type)
     {
-        //
-    }
+        $software_type->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('software-types.index')->with('success', 'Tipo de software eliminado exitosamente');
     }
 }

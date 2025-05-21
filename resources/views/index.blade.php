@@ -10,11 +10,14 @@
                 <div class="card text-center" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">{{ $teacher->nombre }}</h5>
-                        <p class="card-text">Docente registrado.</p>
 
-                        <!--<a href="{{ route('teachers.show', $teacher) }}" class="btn btn-secondary mb-2 w-100">Mostrar</a>-->
-                        <a href="{{ route('teachers.edit', $teacher) }}" class="btn w-100 mb-2" style="background-color: #6F7271; color: white; border-color: #9D2449;">Editar</a>
-                        
+                        <!-- Enlace para editar -->
+                        <!--<a href="{{ route('teachers.edit', $teacher) }}" class="btn w-100 mb-2" style="background-color: #6F7271; color: white; border-color: #9D2449;">Ver</a> -->
+
+                        <a href="{{ route('teachers.show', $teacher) }}" class="btn w-100 mb-2" style="background-color: #6F7271; color: white; border-color: #9D2449;">Ver</a>
+
+
+                        <!-- Formulario para eliminar -->
                         <form action="{{ route('teachers.destroy', $teacher) }}" method="POST" class="d-inline w-100">
                             @csrf
                             @method('DELETE')

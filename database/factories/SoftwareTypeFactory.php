@@ -17,7 +17,7 @@ class SoftwareTypeFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => $this->faker->unique()->word(),
+            'nombre' => $this->faker->unique()->word(), // Nombre único
         ];
     }
 }

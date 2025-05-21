@@ -49,16 +49,25 @@
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/teachers') }}">Docentes</a>
+                            <a class="nav-link" href="{{ route('teachers.index') }}">Docentes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/create') }}">Registrar Docente</a>
+                            <a class="nav-link" href="{{ route('teachers.create') }}">Registrar Docente</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/access') }}">Accesos</a>
+                            <a class="nav-link" href="{{ route('access.index') }}">Accesos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/statistics') }}">Estadísticas</a>
+                            <a class="nav-link" href="{{ route('statistics.index') }}">Estadísticas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('subjects.index') }}">Materias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('careergroups.index') }}">Grupos/Carreras</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('software-types.index') }}">Tipos de Software</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}"
@@ -95,8 +104,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-

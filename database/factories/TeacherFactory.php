@@ -18,6 +18,7 @@ class TeacherFactory extends Factory
     {
         return [
             'nombre' => $this->faker->unique()->name(),
+            'rfid' => $this->faker->unique()->bothify('RFID-####'), // RFID único
         ];
     }
 }

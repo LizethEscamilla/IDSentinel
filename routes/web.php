@@ -5,6 +5,9 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AccessRecordController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SoftwareTypeController;
+use App\Http\Controllers\CareerGroupController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,23 +15,33 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/create', [TeacherController::class, 'create'])->name('create');
-Route::get('delete/{id}', [TeacherController::class,'destroy']);
-Route::put('/teachers/{id}', [TeacherController::class, 'update']);
-Route::get('/teachers', [TeacherController::class, 'index']);
-Route::get('/access', [AccessRecordController::class, 'index'])->name('access');
-Route::put('/teachers/{teacher}', [TeacherController::class, 'update'])->name('teachers.update');
-Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics');
-Route::get('/statistics/export', [StatisticsController::class, 'export'])->name('statistics.export');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::resource('teachers', TeacherController::class);
-Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('teachers.show');
+Route::middleware('auth')->group(function () {
 
-Route::resource('teachers', TeacherController::class)->middleware('auth');
+    Route::get('/dashboard', function () {
+        return redirect()->route('teachers.index');
+    })->name('dashboard');
 
-Route::get('/dashboard', function () {return redirect('/teachers');})->name('dashboard');
+    Route::resource('teachers', TeacherController::class)->except(['show']);
 
+    Route::resource('accessRecords', AccessRecordController::class)->names([
+        'index' => 'access.index',
+    ]);
+
+    Route::resource('subjects', SubjectController::class);
+    Route::resource('careergroups', CareerGroupController::class);
+
+
+    Route::resource('software-types', SoftwareTypeController::class);
+
+    Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('teachers.show');
+
+
+
+    Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+    Route::get('/statistics/export', [StatisticsController::class, 'export'])->name('statistics.export');
+});
 
 
 

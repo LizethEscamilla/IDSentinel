@@ -2,98 +2,100 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Teacher;
-use Illuminate\Support\Facades\File;
-
+use App\Models\Subject; // Asegúrate de importar el modelo de Materia
+use App\Models\CareerGroup; // Asegúrate de importar el modelo de Grupo
+use App\Models\SoftwareType; // Asegúrate de importar el modelo de Software
+use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $teachers=Teacher::all();
+        $teachers = Teacher::all();
         return view('index', compact('teachers'));
-
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('create');
+        // Pasamos los datos de materias, grupos y software a la vista de crear
+        $subjects = Subject::all();
+        $careerGroups = CareerGroup::all();
+        $softwareTypes = SoftwareType::all();
+        return view('create', compact('subjects', 'careerGroups', 'softwareTypes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $teacher = new Teacher();
-        $teacher->nombre = $request->input('nombre');
-        $teacher->save();
-
-        return redirect()->route('teachers.index')->with('success', 'Docente guardado');
+        // Validar la entrada
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:100',
+            'rfid' => 'required|string|max:100',
+            'materias' => 'required|array',
+            'grupos' => 'required|array',
+            'software' => 'required|array',
+        ]);
+    
+        // Crear el docente
+        $teacher = Teacher::create([
+            'nombre' => $validated['nombre'],
+            'rfid' => $validated['rfid'],
+        ]);
+    
+        // Asignar las materias, grupos y software
+        $teacher->subjects()->attach($validated['materias']);
+        $teacher->careerGroups()->attach($validated['grupos']);
+        $teacher->softwareTypes()->attach($validated['software']);
+    
+        // Redirigir o retornar respuesta
+        return redirect()->route('teachers.index')->with('success', 'Docente creado exitosamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Teacher $teacher)
-    {
-        return view('show', compact('teacher'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Teacher $teacher)
     {
-        return view ('edit', compact('teacher'));
+        // Pasamos los datos del docente, materias, grupos y software a la vista de editar
+        $subjects = Subject::all();
+        $careerGroups = CareerGroup::all();
+        $softwareTypes = SoftwareType::all();
+        return view('edit', compact('teacher', 'subjects', 'careerGroups', 'softwareTypes'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Teacher $teacher)
 {
-    // Encuentra el docente por su ID
-    $teacher = Teacher::find($id);
-
-    // Si el docente no existe, redirige o muestra un error
-    if (!$teacher) {
-        return redirect()->route('teachers.index')->with('error', 'Docente no encontrado');
-    }
-
-    // Validación para asegurarse de que el campo 'nombre' no esté vacío
-    $request->validate([
-        'nombre' => 'required|string|max:255',  // Valida que 'nombre' no esté vacío y sea una cadena
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:255|unique:teachers,nombre,' . $teacher->id,
+        'rfid' => 'required|string|max:255|unique:teachers,rfid,' . $teacher->id,
+        'materias' => 'required|array',
+        'grupos' => 'required|array',
+        'software' => 'required|array',
     ]);
 
-    // Actualizamos el docente con el nuevo nombre
-    $teacher->update($request->only('nombre'));
+    $teacher->update([
+        'nombre' => $validated['nombre'],
+        'rfid' => $validated['rfid'],
+    ]);
 
-    // Redirigir de vuelta a la lista de docentes
-    return redirect()->route('teachers.index')->with('success', 'Docente actualizado correctamente');
+    // Usar los nombres correctos de las relaciones:
+    $teacher->subjects()->sync($validated['materias']);
+    $teacher->careerGroups()->sync($validated['grupos']);
+    $teacher->softwareTypes()->sync($validated['software']);
+
+    return redirect()->route('teachers.index')->with('success', 'Docente actualizado correctamente.');
 }
 
+    
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Teacher $teacher)
     {
-        $teacher = Teacher::find($id);
+        $teacher->delete();
 
-        if ($teacher && $teacher->delete()) {
-            return redirect('teachers/');
-        } else {
-            return 'El docente con ID ' . $id . ' no se pudo borrar';
-        }
+        return redirect()->route('teachers.index')->with('success', 'Docente eliminado exitosamente');
     }
+
+    public function show(Teacher $teacher)
+{
+    $teacher->load(['subjects', 'careerGroups', 'softwareTypes']);
+    return view('show', compact('teacher'));
 }
 
+}

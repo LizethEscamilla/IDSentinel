@@ -16,12 +16,12 @@ class CareerGroupFactory extends Factory
      */
     public function definition(): array
     {
-        $semester = $this->faker->numberBetween(1, 10); // 1 a 10 semestre
-        $group = $this->faker->randomElement(['A', 'B', 'C', 'D']); // letras de grupo
-        $career = $this->faker->randomElement(['ISC', 'INF']); // nombres de carrera
+        $semester = $this->faker->numberBetween(1, 10); // Semestres 1 a 10
+        $group = $this->faker->randomElement(['A', 'B', 'C', 'D']); // Letras de grupo
+        $career = $this->faker->randomElement(['ISC', 'INF']); // Nombres de carrera
 
         return [
-            'nombre' => "{$semester}{$group} {$career}",
+            'nombre' => "{$semester}{$group} {$career}", // Nombre del grupo carrera
         ];
     }
 }

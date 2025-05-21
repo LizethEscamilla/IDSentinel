@@ -2,68 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\AccessRecord;
-
+use App\Models\Teacher;
+use App\Models\Subject;
+use App\Models\CareerGroup;
+use App\Models\SoftwareType;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AccessRecordController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
-    { 
-        $accessRecords = AccessRecord::all();
-        return view('access', compact('accessRecords'));;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
     {
-        //
-    }
+        // Obtener todos los registros de acceso con relaciones
+        $accessRecords = AccessRecord::with([
+            'teacher',
+            'subject',
+            'careerGroup',
+            'softwareType'
+        ])->get();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // Calcular el tiempo de uso del software solo si hay hora_entrada y hora_salida
+        foreach ($accessRecords as $record) {
+            if ($record->hora_entrada && $record->hora_salida) {
+                try {
+                    $entrada = Carbon::parse($record->hora_entrada);
+                    $salida = Carbon::parse($record->hora_salida);
+                    $record->tiempo_uso = $entrada->diff($salida)->format('%H:%I');
+                } catch (\Exception $e) {
+                    $record->tiempo_uso = 'Error';
+                }
+            } else {
+                $record->tiempo_uso = 'N/A'; // O puedes usar 'N/A' si prefieres
+            }
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // Obtener catálogos para la vista
+        $teachers = Teacher::all();
+        $subjects = Subject::all();
+        $careerGroups = CareerGroup::all();
+        $softwareTypes = SoftwareType::all();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return view('access', compact(
+            'accessRecords',
+            'teachers',
+            'subjects',
+            'careerGroups',
+            'softwareTypes'
+        ));
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
-   
 }

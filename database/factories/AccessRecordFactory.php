@@ -3,11 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Teacher;       // Importa el modelo Teacher
-use App\Models\Subject;       // Importa el modelo Subject
-use App\Models\CareerGroup;   // Importa el modelo CareerGroup
+use App\Models\Teacher;
+use App\Models\Subject;
+use App\Models\CareerGroup;
 use App\Models\SoftwareType;
-
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AccessRecord>
@@ -22,16 +21,16 @@ class AccessRecordFactory extends Factory
     public function definition(): array
     {
         // Generar una hora de entrada aleatoria
-        $entryTime = $this->faker->dateTimeThisYear(); // Asegúrate de definir la variable $entryTime
-        $estado = $this->faker->randomElement(['libre', 'ocupado']); // Suponiendo que el estado puede ser 'libre' u 'ocupado'
+        $entryTime = $this->faker->dateTimeThisYear(); 
+        $estado = $this->faker->randomElement(['libre', 'ocupado']); 
 
         return [
-            'docente' => Teacher::inRandomOrder()->first()->nombre,
+            'teacher_id' => Teacher::inRandomOrder()->first()->id,
             'rfid' => $this->faker->unique()->bothify('RFID-####'),
-            'materia' => Subject::inRandomOrder()->first()->nombre,
+            'subject_id' => Subject::inRandomOrder()->first()->id,
             'num_alumnos' => $this->faker->numberBetween(10, 40),
-            'grupo_carrera' => CareerGroup::inRandomOrder()->first()->nombre,
-            'tipo_uso_sw' => SoftwareType::inRandomOrder()->first()->nombre,
+            'career_group_id' => CareerGroup::inRandomOrder()->first()->id,
+            'software_type_id' => SoftwareType::inRandomOrder()->first()->id,
             'fecha' => $this->faker->date(),
             'hora_entrada' => $entryTime->format('H:i:s'),
             'hora_salida' => $estado === 'libre'

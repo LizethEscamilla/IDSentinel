@@ -2,63 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        logger('Entrando al método index() de SubjectController');
+
+        $subjects = Subject::all();
+
+        // Prueba si llega aquí correctamente
+        // dd($subjects);
+
+        return view('subjects', compact('subjects'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        logger('Entrando al método create() de SubjectController');
+
+        // Vista sin carpeta: subjects_create.blade.php
+        return view('subjects_create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        logger('Entrando al método store() de SubjectController');
+        logger($request->all());
+
+        $request->validate([
+            'nombre' => 'required|string|max:50|unique:subjects',
+        ]);
+
+        Subject::create($request->all());
+
+        return redirect()->route('subjects.index')->with('success', 'Materia registrada exitosamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Subject $subject)
     {
-        //
+        logger('Entrando al método edit() de SubjectController');
+        logger(['subject' => $subject]);
+
+        // Vista sin carpeta: subjects_edit.blade.php
+        return view('edit_subject', compact('subject'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Subject $subject)
     {
-        //
+        logger('Entrando al método update() de SubjectController');
+
+        $request->validate([
+            'nombre' => 'required|string|max:50|unique:subjects,nombre,' . $subject->id,
+        ]);
+
+        $subject->update([
+            'nombre' => $request->nombre,
+        ]);
+
+        return redirect()->route('subjects.index')->with('success', 'Materia actualizada correctamente');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Subject $subject)
     {
-        //
-    }
+        logger('Entrando al método destroy() de SubjectController');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $subject->delete();
+
+        return redirect()->route('subjects.index')->with('success', 'Materia eliminada exitosamente');
     }
 }

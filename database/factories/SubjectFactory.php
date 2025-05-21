@@ -16,8 +16,14 @@ class SubjectFactory extends Factory
      */
     public function definition(): array
     {
+        $subjects = [
+            'Tópicos Avanzados de Programación',
+            'Administración de Bases de Datos',
+            'Redes de Computadora',
+        ];
+
         return [
-            'nombre' => $this->faker->unique()->word(),
+            'nombre' => $this->faker->randomElement($subjects),
         ];
     }
 }
