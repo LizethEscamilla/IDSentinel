@@ -1,7 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
+
+{{-- Estilos para los logos en las esquinas superiores --}}
+<style>
+    .logo-header {
+        position: relative;
+        height: 100px;
+        margin-bottom: 0;
+    }
+
+    .logo-left {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        height: 100px;
+        padding: 5px;
+    }
+
+    .logo-right {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        height: 100px;
+        padding: 5px;
+    }
+
+    .content-section {
+        position: relative;
+        top: -40px; /* Subir más el contenido */
+    }
+</style>
+
+{{-- Contenedor de logos --}}
+<div class="logo-header">
+    <img src="{{ asset('images/logo1.png') }}" alt="Logo Izquierdo" class="logo-left">
+    <img src="{{ asset('images/logo2.png') }}" alt="Logo Derecho" class="logo-right">
+</div>
+
+{{-- Contenido principal con desplazamiento hacia arriba --}}
+<div class="container content-section mt-4">
     <h2 class="mb-4 text-center">Detalles del Docente</h2>
 
     <div class="row justify-content-center">
@@ -74,3 +112,4 @@
     </div>
 </div>
 @endsection
+
